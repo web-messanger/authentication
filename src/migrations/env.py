@@ -11,15 +11,15 @@ from sqlalchemy import engine_from_config, pool
 config = context.config
 
 section = config.config_ini_section
-config.set_section_option(section, "POSTGRES_HOST", settings.DATABASES.POSTGRES_HOST)
-config.set_section_option(section, "POSTGRES_DB", settings.DATABASES.POSTGRES_DB)
+config.set_section_option(section, "POSTGRES_HOST", settings.DB.POSTGRES_HOST)
+config.set_section_option(section, "POSTGRES_DB", settings.DB.POSTGRES_DB)
 config.set_section_option(
-    section, "POSTGRES_PASSWORD", settings.DATABASES.POSTGRES_PASSWORD
+    section, "POSTGRES_PASSWORD", settings.DB.POSTGRES_PASSWORD
 )
 config.set_section_option(
-    section, "POSTGRES_PORT", str(settings.DATABASES.POSTGRES_PORT)
+    section, "POSTGRES_PORT", str(settings.DB.POSTGRES_PORT)
 )
-config.set_section_option(section, "POSTGRES_USER", settings.DATABASES.POSTGRES_USER)
+config.set_section_option(section, "POSTGRES_USER", settings.DB.POSTGRES_USER)
 
 
 # Interpret the config file for Python logging.
