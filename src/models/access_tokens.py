@@ -9,3 +9,4 @@ class AccessTokens(Base):
     token = Column(Text, primary_key=True)
     user_id = Column(Integer, nullable=False)
     created_at = Column(TIMESTAMP, nullable=False)
+
