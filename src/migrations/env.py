@@ -1,10 +1,10 @@
 from logging.config import fileConfig
 
 from alembic import context
-from config import settings
-from models import Base
 from sqlalchemy import engine_from_config, pool
 
+from config import settings
+from models import Base
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
@@ -13,12 +13,8 @@ config = context.config
 section = config.config_ini_section
 config.set_section_option(section, "POSTGRES_HOST", settings.DB.POSTGRES_HOST)
 config.set_section_option(section, "POSTGRES_DB", settings.DB.POSTGRES_DB)
-config.set_section_option(
-    section, "POSTGRES_PASSWORD", settings.DB.POSTGRES_PASSWORD
-)
-config.set_section_option(
-    section, "POSTGRES_PORT", str(settings.DB.POSTGRES_PORT)
-)
+config.set_section_option(section, "POSTGRES_PASSWORD", settings.DB.POSTGRES_PASSWORD)
+config.set_section_option(section, "POSTGRES_PORT", str(settings.DB.POSTGRES_PORT))
 config.set_section_option(section, "POSTGRES_USER", settings.DB.POSTGRES_USER)
 
 

@@ -6,5 +6,6 @@ class UsersCreate(BaseModel):
     password: str
     email: str
 
+
 class UsersGet(UsersCreate):
     id: int

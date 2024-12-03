@@ -1,5 +1,4 @@
-from .users import UsersGet, UsersCreate
-
+from .users import UsersCreate, UsersGet
 
 __all__ = [
     "UsersGet",

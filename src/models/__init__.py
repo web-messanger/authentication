@@ -1,8 +1,7 @@
-from .base import Base
-from .users import Users
 from .access_tokens import AccessTokens
+from .base import Base
 from .refresh_tokens import RefreshTokens
-
+from .users import Users
 
 __all__ = [
     "Base",
