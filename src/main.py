@@ -9,7 +9,7 @@ if TYPE_CHECKING:
 from database import get_db, engine
 from models import Base, Users
 from schemas import UsersCreate, UsersGet
-from api.auth import get_password_hash, authenticate_user, create_access_token, create_refresh_token
+from api.auth import get_password_hash, authenticate_user, create_access_token, create_refresh_token, delete_tokens
 
 app = FastAPI()
 
@@ -33,3 +33,8 @@ async def login_user(username: str, password: str, db: Annotated["AsyncSession",
     refresh_token = await create_refresh_token(db, user.id, access_token)
 
     return {"access_token": access_token, "refresh_token": refresh_token, "token_type": "bearer"}
+
+
+@app.delete("/logout", status_code=204)
+async def logout(access_token: str, db: Annotated["AsyncSession", Depends(get_db)]):
+    await delete_tokens(db, access_token)

@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 import jwt
 import bcrypt
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import insert, select
+from sqlalchemy import insert, select, delete
 from config import settings
 from models import Users, AccessTokens, RefreshTokens
 from schemas import UsersGet
@@ -61,3 +61,15 @@ def create_jwt(user_id: int, created_at: datetime) -> str:
         algorithm="HS256"
     )
     return jwt_token
+
+
+async def delete_tokens(db: "AsyncSession", access_token: str) -> None:
+    try:
+        async with db.begin():
+            stmt = delete(RefreshTokens).where(RefreshTokens.access_token == access_token)
+            await db.execute(stmt)
+
+            stmt = delete(AccessTokens).where(AccessTokens.token == access_token)
+            await db.execute(stmt)
+    except Exception:
+        await db.rollback()
