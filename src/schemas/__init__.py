@@ -1,7 +1,7 @@
-from .users import UserGet, UserCreate
+from .users import UsersGet, UsersCreate
 
 
 __all__ = [
-    "UserGet",
-    "UserCreate",
+    "UsersGet",
+    "UsersCreate",
 ]

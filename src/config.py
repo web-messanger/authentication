@@ -37,7 +37,7 @@ class AccessToken(BaseSettings):
 class Secret(BaseSettings):
     RESET_PASSWORD_TOKEN_SECRET: str = "SECRET"
     VERIFICATION_TOKEN_SECRET: str = "SECRET"
-
+    PASSWORD_SALT: str
 
 
 class Settings(BaseSettings):
