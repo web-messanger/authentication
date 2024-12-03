@@ -9,7 +9,7 @@ if TYPE_CHECKING:
 from database import get_db, engine
 from models import Base, Users
 from schemas import UsersCreate, UsersGet
-from api.auth import get_password_hash, authenticate_user, create_access_token
+from api.auth import get_password_hash, authenticate_user, create_access_token, create_refresh_token
 
 app = FastAPI()
 
@@ -29,5 +29,7 @@ async def login_user(username: str, password: str, db: Annotated["AsyncSession",
     user = await authenticate_user(db, username, password)
     if not user:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials")
-    access_token = create_access_token(db, {"sub": user.id})
-    return {"access_token": access_token, "token_type": "bearer"}
+    access_token = await create_access_token(db, user.id)
+    refresh_token = await create_refresh_token(db, user.id, access_token)
+
+    return {"access_token": access_token, "refresh_token": refresh_token, "token_type": "bearer"}

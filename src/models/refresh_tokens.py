@@ -8,4 +8,4 @@ class RefreshTokens(Base):
 
     token = Column(Text, primary_key=True)
     access_token = Column(Text, nullable=False)
-    created_at = Column(TIMESTAMP, nullable=False)
+    expires_at = Column(TIMESTAMP, nullable=False)
