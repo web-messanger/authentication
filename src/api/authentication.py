@@ -10,7 +10,7 @@ from auth import (authenticate_user, create_access_token,
                       create_refresh_token, delete_tokens, get_password_hash)
 from database import get_db
 from models import Users
-from schemas import UsersCreate
+from schemas import UsersCreate, LoginUser
 
 
 router = APIRouter(
@@ -33,13 +33,9 @@ async def register_user(
 
 @router.post("/login")
 async def login_user(
-    username: str, password: str, db: Annotated["AsyncSession", Depends(get_db)]
+    user: LoginUser, db: Annotated["AsyncSession", Depends(get_db)]
 ):
-    user = await authenticate_user(db, username, password)
-    if not user:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials"
-        )
+    user = await authenticate_user(db, user.username, user.password)
     access_token = await create_access_token(db, user.id)
     refresh_token = await create_refresh_token(db, user.id, access_token)
 
@@ -53,3 +49,5 @@ async def login_user(
 @router.delete("/logout", status_code=204)
 async def logout(access_token: str, db: Annotated["AsyncSession", Depends(get_db)]):
     await delete_tokens(db, access_token)
+
+

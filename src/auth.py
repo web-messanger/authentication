@@ -1,5 +1,6 @@
 import uuid
 from datetime import datetime, timedelta
+from fastapi import HTTPException, status
 
 import bcrypt
 import jwt
@@ -28,7 +29,9 @@ async def authenticate_user(
     user = result.scalar_one_or_none()
     if user and verify_password(password, user.password):
         return user
-    return None
+    raise HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials"
+    )
 
 
 async def create_access_token(db: AsyncSession, user_id: int) -> str:
