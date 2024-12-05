@@ -1,10 +1,10 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr
 
 
 class UsersCreate(BaseModel):
     username: str
     password: str
-    email: str
+    email: EmailStr
     is_verified: bool | None = None
 
 
