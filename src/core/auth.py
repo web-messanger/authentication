@@ -7,7 +7,7 @@ import jwt
 from sqlalchemy import delete, insert, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from config import settings
+from core.config import settings
 from models import AccessTokens, RefreshTokens, Users
 
 
@@ -36,7 +36,7 @@ async def authenticate_user(
 
 async def create_access_token(db: AsyncSession, user_id: int) -> str:
     now = datetime.utcnow()
-    jwt_token = create_jwt(user_id, now)
+    jwt_token = create_jwt({"sub": user_id}, now)
     data = {"token": jwt_token, "user_id": user_id, "created_at": now}
     stmt = insert(AccessTokens).values(**data)
     await db.execute(stmt)
@@ -58,10 +58,11 @@ async def create_refresh_token(
     return jwt_token
 
 
-def create_jwt(user_id: int, created_at: datetime) -> str:
+def create_jwt(data: dict, created_at: datetime) -> str:
     expire = created_at + timedelta(seconds=settings.ACCEES_TOKEN.LIFETIME_SECONDS)
+    data["exp"] = expire
     jwt_token = jwt.encode(
-        {"sub": user_id, "exp": expire},
+        data,
         settings.SECRET.VERIFICATION_TOKEN_SECRET,
         algorithm="HS256",
     )
@@ -80,3 +81,10 @@ async def delete_tokens(db: "AsyncSession", access_token: str) -> None:
             await db.execute(stmt)
     except Exception:
         await db.rollback()
+
+
+async def check_user(db: "AsyncSession", email: str) -> None:
+    query = select(Users).where(Users.email == email)
+    result = await db.execute(query)
+    if not result.scalar_one_or_none():
+        raise HTTPException(404, detail="User not exists")

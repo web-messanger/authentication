@@ -4,7 +4,7 @@ from typing import ClassVar
 from dotenv import find_dotenv, load_dotenv
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
-load_dotenv(find_dotenv(".env"))
+load_dotenv(find_dotenv("../.env"))
 
 
 class DB(BaseSettings):

@@ -1,14 +1,17 @@
+from datetime import datetime
 from typing import TYPE_CHECKING, Annotated
 
-from fastapi import Depends, HTTPException, status, APIRouter
+from fastapi import Depends, HTTPException, APIRouter
 from sqlalchemy.exc import IntegrityError
+
+from schemas.users import UserEmail
 
 if TYPE_CHECKING:
     from sqlalchemy.ext.asyncio import AsyncSession
 
-from auth import (authenticate_user, create_access_token,
-                      create_refresh_token, delete_tokens, get_password_hash)
-from database import get_db
+from core.auth import (authenticate_user, create_access_token,
+                       create_refresh_token, delete_tokens, get_password_hash, check_user, create_jwt)
+from core.database import get_db
 from models import Users
 from schemas import UsersCreate, LoginUser
 
@@ -51,3 +54,12 @@ async def logout(access_token: str, db: Annotated["AsyncSession", Depends(get_db
     await delete_tokens(db, access_token)
 
 
+@router.post("/verification_token")
+async def create_verification_token(email: UserEmail, db: Annotated["AsyncSession", Depends(get_db)]) -> dict:
+    check_user(db, email.email)
+    verification_token = create_jwt({"sub": email.email}, datetime.utcnow())
+    return {"token": verification_token}
+
+
+@router.post("/verification")
+...
